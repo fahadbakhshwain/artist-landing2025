@@ -1,28 +1,27 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-/* ====== مسارات ثابتة تناسب GitHub Pages ====== */
-const base = (() => {
-  // لو Vite ضبط الـ BASE_URL نستخدمه
-  if (import.meta.env.BASE_URL && import.meta.env.BASE_URL !== "/") {
-    return import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + "/";
-  }
-  // اكتشاف اسم الريبو من المسار /artist-landing2025/
-  const m = window.location.pathname.match(/^\/[^/]+\/?/);
-  return m ? (m[0].endsWith("/") ? m[0] : m[0] + "/") : "/";
-})();
-
+/* =========================
+   مسارات ثابتة + بدائل
+   ========================= */
+const base = import.meta.env.BASE_URL || "/";
 
 const paths = {
+  // صور أساسية
   hero: `${base}img/hero.jpg`,
   about1: `${base}img/about-1.jpg`,
   about2: `${base}img/about-2.jpg`,
+
+  // فيديوهات
   workVideo: `${base}video/work.mp4`,
   projectsVideo: `${base}video/projects.mp4`,
+
+  // صور Work (w1.jpg .. w6.jpg)
   workImages: Array.from({ length: 6 }).map((_, i) => `${base}work/w${i + 1}.jpg`),
+
+  // صور Press (p1.jpg .. p8.jpg)
   pressImages: Array.from({ length: 8 }).map((_, i) => `${base}press/p${i + 1}.jpg`),
 };
 
-/* ====== بدائل (Fallback) لو ملف محلي مفقود ====== */
 const fallback = {
   hero:
     "https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=1920&q=80&auto=format&fit=crop",
@@ -50,47 +49,9 @@ const fallback = {
   ],
 };
 
-/* صورة واحدة: نتاكد موجودة وإلا نستخدم fallback */
-function useImg(src, fb) {
-  const [url, setUrl] = useState(fb || "");
-  useEffect(() => {
-    if (!src) return;
-    const img = new Image();
-    img.onload = () => setUrl(src);
-    img.onerror = () => setUrl(fb || "");
-    img.src = src;
-  }, [src, fb]);
-  return url;
-}
-
-/* قائمة صور: نفحص كل صورة لوحدها ونرجّع مصفوفة URLs مضمونة */
-function useImgs(srcs, fbs = []) {
-  const [urls, setUrls] = useState(() =>
-    srcs.map((_, i) => fbs[i] || fbs[0] || "")
-  );
-  useEffect(() => {
-    srcs.forEach((src, i) => {
-      const img = new Image();
-      img.onload = () =>
-        setUrls((u) => {
-          const c = [...u];
-          c[i] = src;
-          return c;
-        });
-      img.onerror = () =>
-        setUrls((u) => {
-          const c = [...u];
-          c[i] = fbs[i] || fbs[0] || "";
-          return c;
-        });
-      img.src = src;
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(srcs)]);
-  return urls;
-}
-
-/* ===== UI ثابت ===== */
+/* =========================
+   عناصر الواجهة الثابتة
+   ========================= */
 function Header({ onOpenMenu }) {
   return (
     <header className="fixed top-0 left-0 right-0 z-40 px-6 py-3 flex items-center justify-between bg-black/85 text-white">
@@ -153,10 +114,7 @@ function OverlayMenu({ open, onClose, onGo }) {
         {items.map(([id, label]) => (
           <li key={id}>
             <button
-              onClick={() => {
-                onGo(id);
-                onClose();
-              }}
+              onClick={() => { onGo(id); onClose(); }}
               className="hover:text-blue-400"
             >
               {label}
@@ -168,18 +126,32 @@ function OverlayMenu({ open, onClose, onGo }) {
   );
 }
 
-/* ====== الأقسام ====== */
+/* =========================
+   Hero
+   ========================= */
 function Hero({ onContact }) {
-  const hero = useImg(paths.hero, fallback.hero);
-  const bg = `linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35)), url('${hero}')`;
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: bg }} />
+      {/* الصورة الخلفية + تدرّج */}
+      <img
+        src={paths.hero}
+        onError={(e) => { e.currentTarget.src = fallback.hero; }}
+        alt="hero"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      <div className="absolute inset-0 bg-black/35" />
+      {/* النص */}
       <div className="relative z-10 text-center text-white px-4">
-        <h1 className="font-black uppercase mb-4 leading-tight" style={{ fontSize: "clamp(40px, 9vw, 140px)" }}>
+        <h1
+          className="font-black uppercase mb-4 leading-tight"
+          style={{ fontSize: "clamp(40px, 9vw, 140px)" }}
+        >
           SWIMMING IN NONSENSE
         </h1>
-        <p className="uppercase mb-6" style={{ fontSize: "clamp(16px, 2.2vw, 28px)" }}>
+        <p
+          className="uppercase mb-6"
+          style={{ fontSize: "clamp(16px, 2.2vw, 28px)" }}
+        >
           SINCE 1988
         </p>
         <button
@@ -193,16 +165,21 @@ function Hero({ onContact }) {
   );
 }
 
+/* =========================
+   About
+   ========================= */
 function About() {
-  const top = useImg(paths.about1, fallback.about1);
-  const imgR = useImg(paths.about2, fallback.about2);
-  const imgL = useImg(paths.about1, fallback.about1);
-
   return (
     <section id="about" className="bg-white text-neutral-900">
       {/* صورة كبيرة أعلى القسم */}
       <div className="relative w-full h-[60vh] sm:h-[70vh] overflow-hidden">
-        <img src={top} alt="Huda in studio" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
+        <img
+          src={paths.about1}
+          onError={(e) => { e.currentTarget.src = fallback.about1; }}
+          alt="Huda in studio"
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="eager"
+        />
       </div>
 
       {/* نص البايو */}
@@ -210,7 +187,9 @@ function About() {
         <h2 className="text-3xl font-semibold mb-6">About / Bio</h2>
 
         <h3 className="text-lg font-semibold mb-2">Huda Beydoun</h3>
-        <p className="text-sm text-neutral-600 mb-6">Visual Artist | Photographer | Creative Director</p>
+        <p className="text-sm text-neutral-600 mb-6">
+          Visual Artist | Photographer | Creative Director
+        </p>
 
         <div className="space-y-5 leading-7 text-[17px]">
           <p>
@@ -241,29 +220,43 @@ function About() {
         </div>
       </div>
 
-      {/* بلوك 1: نص يسار + صورة يمين */}
+      {/* بلوك 1: نص يسار / صورة يمين */}
       <div className="max-w-6xl mx-auto px-6 pb-24">
         <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
           <div className="order-1">
             <h3 className="text-xl font-semibold mb-3">On Craft & Process</h3>
             <p className="text-neutral-700 leading-7">
-              A practice shaped by curiosity, discipline, and play—where images evolve through layers of intuition and precision.
+              A practice shaped by curiosity, discipline, and play—where images evolve
+              through layers of intuition and precision.
             </p>
           </div>
           <div className="order-2">
-            <img src={imgR} alt="Process" className="w-full aspect-[4/3] object-cover" loading="lazy" />
+            <img
+              src={paths.about2}
+              onError={(e) => { e.currentTarget.src = fallback.about2; }}
+              alt="Process"
+              className="w-full aspect-[4/3] object-cover"
+              loading="lazy"
+            />
           </div>
         </div>
 
-        {/* بلوك 2: صورة يسار + نص يمين */}
+        {/* بلوك 2: صورة يسار / نص يمين */}
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="md:order-1">
-            <img src={imgL} alt="Concept" className="w-full aspect-[4/3] object-cover" loading="lazy" />
+            <img
+              src={paths.about1}
+              onError={(e) => { e.currentTarget.src = fallback.about1; }}
+              alt="Concept"
+              className="w-full aspect-[4/3] object-cover"
+              loading="lazy"
+            />
           </div>
           <div className="md:order-2">
             <h3 className="text-xl font-semibold mb-3">Concept & Emotion</h3>
             <p className="text-neutral-700 leading-7">
-              Joyful visuals meet subtle undercurrents—inviting a slower reading beyond the first impression.
+              Joyful visuals meet subtle undercurrents—inviting a slower reading
+              beyond the first impression.
             </p>
           </div>
         </div>
@@ -272,23 +265,52 @@ function About() {
   );
 }
 
-/* Lightbox بسيط */
-function Lightbox({ images, index, onClose, onPrev, onNext }) {
+/* =========================
+   Lightbox بسيط
+   ========================= */
+function Lightbox({ images, index, onClose, onPrev, onNext, fbList }) {
   if (index < 0) return null;
   return (
     <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center">
-      <button onClick={onClose} className="absolute top-6 right-6 text-white text-3xl" aria-label="close">×</button>
-      <button onClick={onPrev} className="absolute left-4 text-white text-2xl" aria-label="prev">‹</button>
-      <img src={images[index]} className="max-h-[82vh] max-w-[90vw] object-contain" alt="" />
-      <button onClick={onNext} className="absolute right-4 text-white text-2xl" aria-label="next">›</button>
+      <button
+        onClick={onClose}
+        className="absolute top-6 right-6 text-white text-3xl"
+        aria-label="close"
+      >
+        ×
+      </button>
+      <button
+        onClick={onPrev}
+        className="absolute left-4 text-white text-2xl"
+        aria-label="prev"
+      >
+        ‹
+      </button>
+      <img
+        src={images[index]}
+        onError={(e) => { e.currentTarget.src = fbList[index % fbList.length]; }}
+        className="max-h-[82vh] max-w-[90vw] object-contain"
+        alt=""
+      />
+      <button
+        onClick={onNext}
+        className="absolute right-4 text-white text-2xl"
+        aria-label="next"
+      >
+        ›
+      </button>
     </div>
   );
 }
 
+/* =========================
+   Work
+   ========================= */
 function Work() {
-  const imgs = useImgs(paths.workImages, fallback.workImages);
   const [lb, setLb] = useState({ open: false, i: -1 });
-  const workVideo = paths.workVideo;
+
+  // القائمة المصدرية (البديل يعالج عبر onError على مستوى <img>)
+  const sources = useMemo(() => paths.workImages, []);
 
   return (
     <section className="pt-24 pb-16 px-6 max-w-6xl mx-auto">
@@ -296,50 +318,96 @@ function Work() {
 
       {/* فيديو أعلى القسم */}
       <div className="relative w-full aspect-video bg-black mb-4">
-        <video src={workVideo} controls playsInline className="w-full h-full object-cover" />
+        <video
+          src={paths.workVideo}
+          controls
+          playsInline
+          className="w-full h-full object-cover"
+        />
       </div>
       <p className="text-neutral-600 mb-10">
-        A selection from recent bodies of work—spanning painting, digital compositing, and photographic experiments.
+        A selection from recent bodies of work—spanning painting, digital
+        compositing, and photographic experiments.
       </p>
 
-      {/* جريد صور */}
+      {/* شبكة صور */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {imgs.map((src, i) => (
-          <button key={i} onClick={() => setLb({ open: true, i })} className="group text-left" title="Open">
+        {sources.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setLb({ open: true, i })}
+            className="group text-left"
+            title="Open"
+          >
             <div className="w-full h-64 bg-neutral-100 overflow-hidden">
-              <img src={src} className="w-full h-full object-cover group-hover:scale-105 transition" alt="" />
+              <img
+                src={paths.workImages[i]}
+                onError={(e) => {
+                  e.currentTarget.src =
+                    fallback.workImages[i] ?? fallback.workImages[0];
+                }}
+                alt={`work-${i + 1}`}
+                className="w-full h-full object-cover group-hover:scale-105 transition"
+              />
             </div>
             <div className="mt-3">
               <div className="font-medium">Material Encounters</div>
-              <div className="text-sm text-neutral-500">Intersections of textile, paint, and light.</div>
+              <div className="text-sm text-neutral-500">
+                Intersections of textile, paint, and light.
+              </div>
             </div>
           </button>
         ))}
       </div>
 
+      {/* Lightbox */}
       <Lightbox
-        images={imgs}
+        images={paths.workImages}
+        fbList={fallback.workImages}
         index={lb.open ? lb.i : -1}
         onClose={() => setLb({ open: false, i: -1 })}
-        onPrev={() => setLb((s) => ({ ...s, i: (s.i - 1 + imgs.length) % imgs.length }))}
-        onNext={() => setLb((s) => ({ ...s, i: (s.i + 1) % imgs.length }))}
+        onPrev={() =>
+          setLb((s) => ({ ...s, i: (s.i - 1 + paths.workImages.length) % paths.workImages.length }))
+        }
+        onNext={() =>
+          setLb((s) => ({ ...s, i: (s.i + 1) % paths.workImages.length }))
+        }
       />
     </section>
   );
 }
 
+/* =========================
+   Projects
+   ========================= */
 function Projects() {
-  const videoUrl = paths.projectsVideo;
   const cards = [
-    { title: "Metamorphosis", meta: "MoMA, New York — 2024", desc: "A short description about concept, venue, and year." },
-    { title: "Digital Horizons", meta: "Tate Modern, London — 2023", desc: "A short description about concept, venue, and year." },
-    { title: "Echoes of Tomorrow", meta: "Centre Pompidou, Paris — 2023", desc: "A short description about concept, venue, and year." },
+    {
+      title: "Metamorphosis (2024)",
+      meta: "MoMA, New York",
+      desc: "A short description about concept, venue, and year.",
+    },
+    {
+      title: "Digital Horizons (2023)",
+      meta: "Tate Modern, London",
+      desc: "A short description about concept, venue, and year.",
+    },
+    {
+      title: "Echoes of Tomorrow (2023)",
+      meta: "Centre Pompidou, Paris",
+      desc: "A short description about concept, venue, and year.",
+    },
   ];
   return (
     <section className="pt-24 pb-16 px-6 max-w-6xl mx-auto">
       <h2 className="text-3xl font-semibold mb-6">Exhibitions & Projects</h2>
       <div className="relative w-full aspect-video bg-black mb-8">
-        <video src={videoUrl} controls playsInline className="w-full h-full object-cover" />
+        <video
+          src={paths.projectsVideo}
+          controls
+          playsInline
+          className="w-full h-full object-cover"
+        />
       </div>
       <div className="grid md:grid-cols-3 gap-6">
         {cards.map((c) => (
@@ -354,8 +422,11 @@ function Projects() {
   );
 }
 
+/* =========================
+   Press / Media (سلايدر تلقائي)
+   ========================= */
 function Press() {
-  const imgs = useImgs(paths.pressImages, fallback.pressImages);
+  const imgs = useMemo(() => paths.pressImages, []);
   const [i, setI] = useState(0);
   const timer = useRef(null);
 
@@ -369,33 +440,61 @@ function Press() {
       <h2 className="text-3xl font-semibold mb-6">Press / Media</h2>
       <div className="relative w-full overflow-hidden">
         <div className="w-full h-[52vw] max-h-[620px] bg-neutral-100">
-          <img src={imgs[i]} className="w-full h-full object-cover" alt="press" />
+          <img
+            src={imgs[i]}
+            onError={(e) => {
+              e.currentTarget.src =
+                fallback.pressImages[i % fallback.pressImages.length];
+            }}
+            className="w-full h-full object-cover"
+            alt="press"
+          />
         </div>
         <div className="absolute bottom-4 right-4 flex gap-2">
-          <button className="px-3 py-1 bg-black/70 text-white" onClick={() => setI((v) => (v - 1 + imgs.length) % imgs.length)}>‹</button>
-          <button className="px-3 py-1 bg-black/70 text-white" onClick={() => setI((v) => (v + 1) % imgs.length)}>›</button>
+          <button
+            className="px-3 py-1 bg-black/70 text-white"
+            onClick={() => setI((v) => (v - 1 + imgs.length) % imgs.length)}
+          >
+            ‹
+          </button>
+          <button
+            className="px-3 py-1 bg-black/70 text-white"
+            onClick={() => setI((v) => (v + 1) % imgs.length)}
+          >
+            ›
+          </button>
         </div>
       </div>
     </section>
   );
 }
 
+/* =========================
+   Contact
+   ========================= */
 function Contact() {
   return (
     <section className="pt-24 pb-16 px-6 max-w-5xl mx-auto">
       <h2 className="text-3xl font-semibold mb-6">Contact</h2>
       <p className="mb-2">
-        Email: <a href="mailto:hello@artist.com" className="underline">hello@artist.com</a>
+        Email:{" "}
+        <a href="mailto:hello@artist.com" className="underline">
+          hello@artist.com
+        </a>
       </p>
       <p>Instagram · Behance · LinkedIn</p>
     </section>
   );
 }
 
+/* =========================
+   App
+   ========================= */
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [section, setSection] = useState("home");
 
+  // عند تغيير القسم رجّع لأعلى الصفحة
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [section]);
@@ -404,8 +503,13 @@ export default function App() {
     <div className="bg-white text-neutral-900">
       <Header onOpenMenu={() => setMenuOpen(true)} />
       <SocialBar />
-      <OverlayMenu open={menuOpen} onClose={() => setMenuOpen(false)} onGo={(id) => setSection(id)} />
+      <OverlayMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        onGo={(id) => setSection(id)}
+      />
 
+      {/* يظهر قسم واحد فقط */}
       {section === "home" && <Hero onContact={() => setSection("contact")} />}
       {section === "about" && <About />}
       {section === "work" && <Work />}
@@ -413,10 +517,10 @@ export default function App() {
       {section === "press" && <Press />}
       {section === "contact" && <Contact />}
 
-      {/* Animation helpers (خفيفة) */}
+      {/* لمسة أنيميشن خفيفة للريڤيل (اختياري) */}
       <style>{`
-        [data-reveal]{opacity:0;transform:translateY(12px);transition:all .8s ease;}
-        .reveal-in{opacity:1!important;transform:translateX(0) translateY(0)!important;}
+        [data-reveal] { opacity: 0; transform: translateY(12px); transition: all .8s ease; }
+        .reveal-in { opacity: 1 !important; transform: translateX(0) translateY(0) !important; }
       `}</style>
     </div>
   );
