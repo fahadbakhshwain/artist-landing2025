@@ -1,23 +1,21 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+// استخدم رابطك المباشر في الإنتاج، و / في التطوير
+const ABS = import.meta.env.DEV
+  ? "/"
+  : "https://fahadbakhshwain.github.io/artist-landing2025/";
 
-/* =========================================================
-   1) Prefix ثابت لمجلد GitHub Pages الخاص بالموقع
-   ========================================================= */
-const BASE = "/artist-landing2025/";
-const withBase = (p) => BASE + p.replace(/^\//, "");
+const withAbs = (p) => ABS + p.replace(/^\//, "");
 
-/* =========================================================
-   2) كل المسارات عبر withBase (لا تعتمد على BASE_URL)
-   ========================================================= */
+// كل المسارات هنا (بدون import.meta.env.BASE_URL)
 const paths = {
-  hero: withBase("img/hero.jpg"),
-  about1: withBase("img/about-1.jpg"),
-  about2: withBase("img/about-2.jpg"),
-  workVideo: withBase("video/work.mp4"),
-  projectsVideo: withBase("video/projects.mp4"),
-  workImages: Array.from({ length: 6 }).map((_, i) => withBase(`work/w${i + 1}.jpg`)),
-  pressImages: Array.from({ length: 8 }).map((_, i) => withBase(`press/p${i + 1}.jpg`)),
+  hero: withAbs("img/hero.jpg"),
+  about1: withAbs("img/about-1.jpg"),
+  about2: withAbs("img/about-2.jpg"),
+  workVideo: withAbs("video/work.mp4"),
+  projectsVideo: withAbs("video/projects.mp4"),
+  workImages: Array.from({ length: 6 }).map((_, i) => withAbs(`work/w${i + 1}.jpg`)),
+  pressImages: Array.from({ length: 8 }).map((_, i) => withAbs(`press/p${i + 1}.jpg`)),
 };
+
 
 /* بدائل Unsplash لو ملف محلي ناقص */
 const fallback = {
