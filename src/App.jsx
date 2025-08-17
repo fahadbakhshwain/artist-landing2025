@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 
 export default function App() {
-  // يضمن أن مسار الصورة يشتغل على GitHub Pages داخل /artist-landing2025/
-  const hero = `${import.meta.env.BASE_URL}img/hero.jpg`;
+  // صورة محلية (لو موجودة داخل public/img/hero.jpg)
+  const heroLocal = `${import.meta.env.BASE_URL}img/hero.jpg`;
+  // صورة احتياطية أونلاين (تشتغل فورًا لو المحلية غير موجودة)
+  const heroFallback = "https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=1920";
+  const backgroundImage = `linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35)), url('${heroLocal}'), url('${heroFallback}')`;
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -15,7 +19,6 @@ export default function App() {
         >
           Huda Beydoun
         </div>
-
         <button
           onClick={() => setMenuOpen(true)}
           className="flex items-center gap-2 text-white/90 hover:text-white border border-white/50 px-3 py-1 text-sm"
@@ -27,15 +30,10 @@ export default function App() {
 
       {/* Hero */}
       <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* الخلفية فل سكرين */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url('${hero}')` }}
+          style={{ backgroundImage }}
         />
-        {/* تغميق بسيط للقراءة */}
-        <div className="absolute inset-0 bg-black/35" />
-
-        {/* النص فوق الصورة */}
         <div className="relative z-10 text-center text-white px-4">
           <h1
             className="font-black uppercase mb-4 leading-tight"
@@ -47,7 +45,6 @@ export default function App() {
           >
             SWIMMING IN NONSENSE
           </h1>
-
           <p
             className="uppercase mb-6"
             style={{
@@ -57,7 +54,6 @@ export default function App() {
           >
             SINCE 1988
           </p>
-
           <a
             href="#contact"
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 text-sm"
@@ -67,7 +63,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Overlay Menu */}
+      {/* Overlay menu */}
       {menuOpen && (
         <div className="fixed inset-0 z-40 bg-black/85 flex items-center justify-center">
           <button
@@ -87,11 +83,7 @@ export default function App() {
               ["contact", "contact"],
             ].map(([id, label]) => (
               <li key={id}>
-                <a
-                  href={`#${id}`}
-                  onClick={() => setMenuOpen(false)}
-                  className="hover:text-blue-400"
-                >
+                <a href={`#${id}`} onClick={() => setMenuOpen(false)} className="hover:text-blue-400">
                   {label}
                 </a>
               </li>
@@ -100,7 +92,7 @@ export default function App() {
         </div>
       )}
 
-      {/* placeholder لقسم تواصل عشان زر Contact يشتغل */}
+      {/* placeholder لـ contact عشان زر Contact يشتغل */}
       <section id="contact" className="h-1" />
     </div>
   );
