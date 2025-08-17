@@ -1,11 +1,15 @@
-// استخدم رابطك المباشر في الإنتاج، و / في التطوير
-const ABS = import.meta.env.DEV
-  ? "/"
-  : "https://fahadbakhshwain.github.io/artist-landing2025/";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
+/* =========================
+   مسارات ثابتة "مضمونة"
+   - في التطوير: "/" (لوكال)
+   - في الإنتاج: رابط صفحاتك على GitHub Pages
+========================= */
+const PROD_BASE = "https://fahadbakhshwain.github.io/artist-landing2025/";
+const ABS = import.meta.env.PROD ? PROD_BASE : "/"; // PROD على GitHub
 const withAbs = (p) => ABS + p.replace(/^\//, "");
 
-// كل المسارات هنا (بدون import.meta.env.BASE_URL)
+// كل الملفات من مجلد public/ في الريبو
 const paths = {
   hero: withAbs("img/hero.jpg"),
   about1: withAbs("img/about-1.jpg"),
@@ -16,15 +20,11 @@ const paths = {
   pressImages: Array.from({ length: 8 }).map((_, i) => withAbs(`press/p${i + 1}.jpg`)),
 };
 
-
-/* بدائل Unsplash لو ملف محلي ناقص */
+// بدائل جاهزة لو أي صورة ما انوجدت
 const fallback = {
-  hero:
-    "https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=1920&q=80&auto=format&fit=crop",
-  about1:
-    "https://images.unsplash.com/photo-1520975954732-35dd22cb0ff3?w=1600&q=80&auto=format&fit=crop",
-  about2:
-    "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1600&q=80&auto=format&fit=crop",
+  hero: "https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=1920&q=80&auto=format&fit=crop",
+  about1: "https://images.unsplash.com/photo-1520975954732-35dd22cb0ff3?w=1600&q=80&auto=format&fit=crop",
+  about2: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1600&q=80&auto=format&fit=crop",
   workImages: [
     "https://images.unsplash.com/photo-1533228100845-08145b01de14?w=1400&q=80&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1400&q=80&auto=format&fit=crop",
@@ -45,23 +45,12 @@ const fallback = {
   ],
 };
 
-/* محاولة تحميل الصورة المحلية أولاً، وإلا نستخدم البديل */
-function useImg(preferred, fb) {
-  const [url, setUrl] = useState(fb);
-  useEffect(() => {
-    if (!preferred) return;
-    const img = new Image();
-    img.onload = () => setUrl(preferred);
-    img.onerror = () => setUrl(fb);
-    img.src = preferred;
-  }, [preferred, fb]);
-  return url;
-}
-
-/* ----------------- UI الثابتة ----------------- */
+/* =========================
+   عناصر الواجهة الثابتة
+========================= */
 function Header({ onOpenMenu }) {
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 px-6 py-3 flex items-center justify-between bg-black/80 text-white">
+    <header className="fixed top-0 left-0 right-0 z-40 px-6 py-3 flex items-center justify-between bg-black/85 text-white">
       <div className="text-xl font-black tracking-tight">hudabeydouN</div>
       <button
         onClick={onOpenMenu}
@@ -81,14 +70,14 @@ function SocialBar() {
     ["in", "https://linkedin.com/"],
   ];
   return (
-    <div className="fixed right-4 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-4">
+    <div className="fixed right-4 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-3">
       {items.map(([t, href]) => (
         <a
           key={t}
           href={href}
           target="_blank"
           rel="noreferrer"
-          className="w-9 h-9 rounded-full bg-white/90 text-black flex items-center justify-center font-bold hover:bg-white transition"
+          className="w-9 h-9 rounded-full bg-white/95 text-black flex items-center justify-center font-bold hover:bg-white transition"
           title={t}
         >
           {t}
@@ -114,7 +103,10 @@ function OverlayMenu({ open, onClose, onGo }) {
       <ul className="space-y-3 text-center text-xl">
         {items.map(([id, label]) => (
           <li key={id}>
-            <button onClick={() => { onGo(id); onClose(); }} className="hover:text-blue-400">
+            <button
+              onClick={() => { onGo(id); onClose(); }}
+              className="hover:text-blue-400"
+            >
               {label}
             </button>
           </li>
@@ -124,13 +116,19 @@ function OverlayMenu({ open, onClose, onGo }) {
   );
 }
 
-/* ----------------- الأقسام ----------------- */
+/* =========================
+   الأقسام
+========================= */
 function Hero({ onContact }) {
-  const hero = useImg(paths.hero, fallback.hero);
-  const bg = `linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35)), url('${hero}')`;
+  const [src, setSrc] = useState(paths.hero);
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: bg }} />
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35)), url('${src}')`,
+        }}
+      />
       <div className="relative z-10 text-center text-white px-4">
         <h1 className="font-black uppercase mb-4 leading-tight" style={{ fontSize: "clamp(40px, 9vw, 140px)" }}>
           SWIMMING IN NONSENSE
@@ -142,27 +140,39 @@ function Hero({ onContact }) {
           Contact
         </button>
       </div>
+      {/* لو الصورة فشلت، بدّل الخلفية للبديل */}
+      <img
+        src={paths.hero}
+        onError={() => setSrc(fallback.hero)}
+        alt=""
+        className="hidden"
+      />
     </section>
   );
 }
 
 function About() {
-  const top = useImg(paths.about1, fallback.about1);
-  const imgR = useImg(paths.about2, fallback.about2);
-  const imgL = useImg(paths.about1, fallback.about1);
-
   return (
     <section id="about" className="bg-white text-neutral-900">
       {/* صورة كبيرة أعلى القسم */}
       <div className="relative w-full h-[60vh] sm:h-[70vh] overflow-hidden">
-        <img src={top} alt="Huda in studio" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
+        <img
+          src={paths.about1}
+          onError={(e) => (e.currentTarget.src = fallback.about1)}
+          alt="Huda in studio"
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="eager"
+        />
       </div>
 
       {/* نص البايو */}
       <div className="max-w-5xl mx-auto px-6 py-16">
         <h2 className="text-3xl font-semibold mb-6">About / Bio</h2>
+
         <h3 className="text-lg font-semibold mb-2">Huda Beydoun</h3>
-        <p className="text-sm text-neutral-600 mb-6">Visual Artist | Photographer | Creative Director</p>
+        <p className="text-sm text-neutral-600 mb-6">
+          Visual Artist | Photographer | Creative Director
+        </p>
 
         <div className="space-y-5 leading-7 text-[17px]">
           <p>
@@ -204,14 +214,26 @@ function About() {
             </p>
           </div>
           <div className="order-2">
-            <img src={imgR} alt="Process" className="w-full aspect-[4/3] object-cover" loading="lazy" />
+            <img
+              src={paths.about2}
+              onError={(e) => (e.currentTarget.src = fallback.about2)}
+              alt="Process"
+              className="w-full aspect-[4/3] object-cover"
+              loading="lazy"
+            />
           </div>
         </div>
 
         {/* بلوك 2: صورة يسار + نص يمين */}
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="md:order-1">
-            <img src={imgL} alt="Concept" className="w-full aspect-[4/3] object-cover" loading="lazy" />
+            <img
+              src={paths.about1}
+              onError={(e) => (e.currentTarget.src = fallback.about1)}
+              alt="Concept"
+              className="w-full aspect-[4/3] object-cover"
+              loading="lazy"
+            />
           </div>
           <div className="md:order-2">
             <h3 className="text-xl font-semibold mb-3">Concept & Emotion</h3>
@@ -239,25 +261,26 @@ function Lightbox({ images, index, onClose, onPrev, onNext }) {
 }
 
 function Work() {
+  const imgs = useMemo(() => paths.workImages, []);
   const [lb, setLb] = useState({ open: false, i: -1 });
-  const imgs = useMemo(() => paths.workImages.slice(), []);
-  const finalImgs = imgs.map((src, i) => src || fallback.workImages[i] || fallback.workImages[0]);
-  const workVideo = paths.workVideo;
 
   return (
     <section className="pt-24 pb-16 px-6 max-w-6xl mx-auto">
       <h2 className="text-3xl font-semibold mb-6">Work Portfolio</h2>
 
+      {/* فيديو أعلى القسم */}
       <div className="relative w-full aspect-video bg-black mb-4">
-        <video src={workVideo} controls playsInline className="w-full h-full object-cover" />
+        <video src={paths.workVideo} controls playsInline className="w-full h-full object-cover" />
       </div>
+
       <p className="text-neutral-600 mb-10">
         A selection from recent bodies of work—spanning painting, digital
         compositing, and photographic experiments.
       </p>
 
+      {/* شبكة صور */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {finalImgs.map((src, i) => (
+        {imgs.map((src, i) => (
           <button
             key={i}
             onClick={() => setLb({ open: true, i })}
@@ -274,29 +297,26 @@ function Work() {
             </div>
             <div className="mt-3">
               <div className="font-medium">Material Encounters</div>
-              <div className="text-sm text-neutral-500">
-                Intersections of textile, paint, and light.
-              </div>
+              <div className="text-sm text-neutral-500">Intersections of textile, paint, and light.</div>
             </div>
           </button>
         ))}
       </div>
 
       <Lightbox
-        images={finalImgs}
+        images={imgs.map((s, i) => s || fallback.workImages[i])}
         index={lb.open ? lb.i : -1}
         onClose={() => setLb({ open: false, i: -1 })}
-        onPrev={() => setLb((s) => ({ ...s, i: (s.i - 1 + finalImgs.length) % finalImgs.length }))}
-        onNext={() => setLb((s) => ({ ...s, i: (s.i + 1) % finalImgs.length }))}
+        onPrev={() => setLb((s) => ({ ...s, i: (s.i - 1 + imgs.length) % imgs.length }))}
+        onNext={() => setLb((s) => ({ ...s, i: (s.i + 1) % imgs.length }))}
       />
     </section>
   );
 }
 
 function Projects() {
-  const videoUrl = paths.projectsVideo;
   const cards = [
-    { title: "Metamorphosis", meta: "MoMA, New York — 2024", desc: "A short description about concept, venue, and year." },
+    { title: "Metamorphosis",   meta: "MoMA, New York — 2024",    desc: "A short description about concept, venue, and year." },
     { title: "Digital Horizons", meta: "Tate Modern, London — 2023", desc: "A short description about concept, venue, and year." },
     { title: "Echoes of Tomorrow", meta: "Centre Pompidou, Paris — 2023", desc: "A short description about concept, venue, and year." },
   ];
@@ -304,7 +324,7 @@ function Projects() {
     <section className="pt-24 pb-16 px-6 max-w-6xl mx-auto">
       <h2 className="text-3xl font-semibold mb-6">Exhibitions & Projects</h2>
       <div className="relative w-full aspect-video bg-black mb-8">
-        <video src={videoUrl} controls playsInline className="w-full h-full object-cover" />
+        <video src={paths.projectsVideo} controls playsInline className="w-full h-full object-cover" />
       </div>
       <div className="grid md:grid-cols-3 gap-6">
         {cards.map((c) => (
@@ -320,7 +340,7 @@ function Projects() {
 }
 
 function Press() {
-  const imgs = paths.pressImages.slice();
+  const imgs = paths.pressImages;
   const [i, setI] = useState(0);
   const timer = useRef(null);
 
@@ -362,7 +382,9 @@ function Contact() {
   );
 }
 
-/* ----------------- App ----------------- */
+/* =========================
+   App
+========================= */
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [section, setSection] = useState("home");
