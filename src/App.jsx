@@ -3,24 +3,19 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 /* =========================
    مسارات ثابتة + بدائل
    ========================= */
-const base = import.meta.env.BASE_URL || "/";
+// استخدم prefix ثابت لصفحة GitHub Pages
+const prefix = '/artist-landing2025/';
 
 const paths = {
-  // صور أساسية
-  hero: `${base}img/hero.jpg`,
-  about1: `${base}img/about-1.jpg`,
-  about2: `${base}img/about-2.jpg`,
-
-  // فيديوهات
-  workVideo: `${base}video/work.mp4`,
-  projectsVideo: `${base}video/projects.mp4`,
-
-  // صور Work (w1.jpg .. w6.jpg)
-  workImages: Array.from({ length: 6 }).map((_, i) => `${base}work/w${i + 1}.jpg`),
-
-  // صور Press (p1.jpg .. p8.jpg)
-  pressImages: Array.from({ length: 8 }).map((_, i) => `${base}press/p${i + 1}.jpg`),
+  hero: `${prefix}img/hero.jpg`,
+  about1: `${prefix}img/about-1.jpg`,
+  about2: `${prefix}img/about-2.jpg`,
+  workVideo: `${prefix}video/work.mp4`,
+  projectsVideo: `${prefix}video/projects.mp4`,
+  workImages: Array.from({ length: 6 }).map((_, i) => `${prefix}work/w${i + 1}.jpg`),
+  pressImages: Array.from({ length: 8 }).map((_, i) => `${prefix}press/p${i + 1}.jpg`),
 };
+
 
 const fallback = {
   hero:
