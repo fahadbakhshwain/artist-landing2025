@@ -98,29 +98,26 @@ export default function App() {
       </header>
 
       {/* Hero */}
-<section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+<section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+  {/* الخلفية */}
   <div
     className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-    style={{ backgroundImage: `linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)), url('/img/hero.jpg')` }}
+    style={{ backgroundImage: "url('/img/hero.jpg')" }}
   />
-  <div className="relative z-10 text-center text-white" data-animate>
-    <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-4 opacity-0 translate-y-8 transition-all duration-1000 ease-out">
-      {/* اكتب الشعار هنا */}
-      فهد باخشوين
+  {/* طبقة تغميق خفيفة للقراءة */}
+  <div className="absolute inset-0 bg-black/35" />
+
+  {/* النص */}
+  <div className="relative z-10 text-center text-white px-4">
+    <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-4">
+      SWIMMING IN NONSENSE
     </h1>
-
-    <p className="text-2xl md:text-3xl font-light tracking-tight mb-8 opacity-0 translate-y-4 transition-all duration-1000 delay-300 ease-out">
-      {/* السطر الثاني (اختياري) */}
-      فنان بصري — Portfolio
+    <p className="text-2xl md:text-3xl font-light tracking-widest uppercase mb-8">
+      SINCE 1988
     </p>
-
-    <Button
-      onClick={() => scrollToSection("contact")}
-      className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg font-medium rounded-none transition-all duration-300 opacity-0 translate-y-4 delay-500"
-    >
-      تواصل
-    </Button>
   </div>
+</section>
+
 </section>
 
       {/* About */}
