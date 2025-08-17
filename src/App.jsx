@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-// === مسارات ثابتة تساعدنا على GitHub Pages ===
+/* ===== مسارات ثابتة تدعم GitHub Pages ===== */
 const base = import.meta.env.BASE_URL || "/";
 
 const paths = {
@@ -13,7 +13,7 @@ const paths = {
   pressImages: Array.from({ length: 8 }).map((_, i) => `${base}press/p${i + 1}.jpg`),
 };
 
-// بدائل عبر Unsplash إذا ملف محلي مفقود
+/* ===== بدائل (Unsplash) لو ملف محلي ناقص ===== */
 const fallback = {
   hero:
     "https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=1920&q=80&auto=format&fit=crop",
@@ -41,7 +41,7 @@ const fallback = {
   ],
 };
 
-// يساعدنا نتحقق بسرعة إذا الصورة المحلية موجودة (نحاول نحمّلها)
+/* تحميل صورة مع بديل تلقائي */
 function useImg(src, fb) {
   const [url, setUrl] = useState(fb);
   useEffect(() => {
@@ -54,23 +54,23 @@ function useImg(src, fb) {
   return url;
 }
 
+/* ====== HEADER ====== */
 function Header({ onOpenMenu }) {
   return (
     <header className="fixed top-0 left-0 right-0 z-40 px-6 py-3 flex items-center justify-between bg-black/80 text-white">
-      <div className="text-xl font-black tracking-tight">hudabeydouN</div>
+      <div className="text-xl font-black tracking-tight">hudabeydoun</div>
       <button
         onClick={onOpenMenu}
         className="flex items-center gap-2 border border-white/60 px-3 py-1 hover:bg-white hover:text-black transition"
       >
-        <span className="text-lg" aria-hidden>
-          ≡
-        </span>
+        <span className="text-lg" aria-hidden>≡</span>
         <span>menu</span>
       </button>
     </header>
   );
 }
 
+/* ====== Social (يمين) ====== */
 function SocialBar() {
   const items = [
     ["IG", "https://instagram.com/"],
@@ -95,6 +95,7 @@ function SocialBar() {
   );
 }
 
+/* ====== المنيو ====== */
 function OverlayMenu({ open, onClose, onGo }) {
   if (!open) return null;
   const items = [
@@ -107,21 +108,12 @@ function OverlayMenu({ open, onClose, onGo }) {
   ];
   return (
     <div className="fixed inset-0 z-50 bg-black/90 text-white flex items-center justify-center">
-      <button
-        onClick={onClose}
-        className="absolute top-6 right-6 text-3xl"
-        aria-label="close menu"
-      >
-        ×
-      </button>
+      <button onClick={onClose} className="absolute top-6 right-6 text-3xl" aria-label="close menu">×</button>
       <ul className="space-y-3 text-center text-xl">
         {items.map(([id, label]) => (
           <li key={id}>
             <button
-              onClick={() => {
-                onGo(id);
-                onClose();
-              }}
+              onClick={() => { onGo(id); onClose(); }}
               className="hover:text-blue-400"
             >
               {label}
@@ -133,47 +125,19 @@ function OverlayMenu({ open, onClose, onGo }) {
   );
 }
 
-function useReveal() {
-  useEffect(() => {
-    const els = document.querySelectorAll("[data-reveal]");
-    const io = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add("reveal-in");
-        }),
-      { threshold: 0.15 }
-    );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
-}
-
+/* ====== HERO ====== */
 function Hero({ onContact }) {
   const hero = useImg(paths.hero, fallback.hero);
   const bg = `linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35)), url('${hero}')`;
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: bg }}
-      />
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: bg }} />
       <div className="relative z-10 text-center text-white px-4">
-        <h1
-          className="font-black uppercase mb-4 leading-tight"
-          style={{ fontSize: "clamp(40px, 9vw, 140px)" }}
-        >
+        <h1 className="font-black uppercase mb-4 leading-tight" style={{ fontSize: "clamp(40px, 9vw, 140px)" }}>
           SWIMMING IN NONSENSE
         </h1>
-        <p
-          className="uppercase mb-6"
-          style={{ fontSize: "clamp(16px, 2.2vw, 28px)" }}
-        >
-          SINCE 1988
-        </p>
-        <button
-          onClick={onContact}
-          className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 text-sm"
-        >
+        <p className="uppercase mb-6" style={{ fontSize: "clamp(16px, 2.2vw, 28px)" }}>SINCE 1988</p>
+        <button onClick={onContact} className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 text-sm">
           Contact
         </button>
       </div>
@@ -181,149 +145,101 @@ function Hero({ onContact }) {
   );
 }
 
-{/* ===== ABOUT / BIO ===== */}
-{activeSection === "about" && (
-  <section id="about" className="bg-white text-neutral-900">
+/* ====== ABOUT ====== */
+function About() {
+  const imgTop = useImg(paths.about1, fallback.about1);
+  const imgProcess = useImg(paths.about2, fallback.about2);
+  const imgConcept = useImg(paths.about1, fallback.about1);
 
-    {/* صورة كبيرة في أعلى القسم */}
-    <div className="relative w-full h-[60vh] sm:h-[70vh] overflow-hidden">
-      <img
-        src={`${import.meta.env.BASE_URL}img/about-1.jpg`}
-        alt="Huda in studio"
-        className="absolute inset-0 w-full h-full object-cover"
-        loading="eager"
-      />
-    </div>
-
-    {/* نص البايو */}
-    <div className="max-w-5xl mx-auto px-6 py-16">
-      <h2 className="text-3xl font-semibold mb-6">About / Bio</h2>
-
-      <h3 className="text-lg font-semibold mb-2">Huda Beydoun</h3>
-      <p className="text-sm text-neutral-600 mb-6">
-        Visual Artist | Photographer | Creative Director
-      </p>
-
-      <div className="space-y-5 leading-7 text-[17px]">
-        <p>
-          Born in 1988 in Saudi Arabia, Huda Beydoun is a multidisciplinary visual artist,
-          photographer, and creative director whose work has been exhibited locally and
-          internationally since 2009. Her practice spans painting, mixed media, digital art,
-          and photography, weaving together vibrant colors and layered narratives that explore
-          the depth of human experience.
-        </p>
-        <p>
-          Her distinctive visual language often pairs joyful, striking compositions with subtle
-          emotional undercurrents, inviting viewers to look beyond the surface.
-        </p>
-        <p>
-          In 2018, she moved to Paris to study fashion photography under the creative direction
-          of Paolo Roversi and Dominique Issermann, an experience that refined her ability to
-          merge conceptual vision with technical precision. Her work as a creative director has
-          further shaped her capacity to curate cohesive visual worlds, from individual artworks
-          to large-scale projects.
-        </p>
-        <p>
-          Her work has been presented in galleries, cultural institutions, and art fairs, and is
-          recognized for its ability to connect audiences across cultures through both visual impact
-          and emotional resonance. Guided by a commitment to authenticity and a refined artistic
-          vision, Huda continues to expand her creative practice while remaining rooted in the shared
-          human condition.
-        </p>
+  return (
+    <section id="about" className="bg-white text-neutral-900">
+      {/* صورة كبيرة أعلى القسم */}
+      <div className="relative w-full h-[60vh] sm:h-[70vh] overflow-hidden">
+        <img src={imgTop} alt="Huda in studio" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
       </div>
-    </div>
 
-    {/* بلوك 1: صورة يمين + نص يسار */}
-    <div className="max-w-6xl mx-auto px-6 pb-24">
-      <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
-        <div className="order-1">
-          <h3 className="text-xl font-semibold mb-3">On Craft & Process</h3>
-          <p className="text-neutral-700 leading-7">
-            A practice shaped by curiosity, discipline, and play—where images evolve
-            through layers of intuition and precision.
+      {/* نص البايو */}
+      <div className="max-w-5xl mx-auto px-6 py-16">
+        <h2 className="text-3xl font-semibold mb-6">About / Bio</h2>
+
+        <h3 className="text-lg font-semibold mb-2">Huda Beydoun</h3>
+        <p className="text-sm text-neutral-600 mb-6">Visual Artist | Photographer | Creative Director</p>
+
+        <div className="space-y-5 leading-7 text-[17px]">
+          <p>
+            Born in 1988 in Saudi Arabia, Huda Beydoun is a multidisciplinary visual artist, photographer, and creative
+            director whose work has been exhibited locally and internationally since 2009. Her practice spans painting,
+            mixed media, digital art, and photography, weaving together vibrant colors and layered narratives that explore
+            the depth of human experience.
           </p>
-        </div>
-        <div className="order-2">
-          <img
-            src={`${import.meta.env.BASE_URL}img/about-2.jpg`}
-            alt="Process"
-            className="w-full aspect-[4/3] object-cover"
-            loading="lazy"
-          />
-        </div>
-      </div>
-
-      {/* بلوك 2: صورة يسار + نص يمين */}
-      <div className="grid md:grid-cols-2 gap-12 items-center">
-        <div className="md:order-1">
-          <img
-            src={`${import.meta.env.BASE_URL}img/about-1.jpg`}
-            alt="Concept"
-            className="w-full aspect-[4/3] object-cover"
-            loading="lazy"
-          />
-        </div>
-        <div className="md:order-2">
-          <h3 className="text-xl font-semibold mb-3">Concept & Emotion</h3>
-          <p className="text-neutral-700 leading-7">
-            Joyful visuals meet subtle undercurrents—inviting a slower reading
-            beyond the first impression.
+          <p>
+            Her distinctive visual language often pairs joyful, striking compositions with subtle emotional undercurrents,
+            inviting viewers to look beyond the surface.
+          </p>
+          <p>
+            In 2018, she moved to Paris to study fashion photography under the creative direction of Paolo Roversi and
+            Dominique Issermann, an experience that refined her ability to merge conceptual vision with technical precision.
+            Her work as a creative director has further shaped her capacity to curate cohesive visual worlds, from individual
+            artworks to large-scale projects.
+          </p>
+          <p>
+            Her work has been presented in galleries, cultural institutions, and art fairs, and is recognized for its ability
+            to connect audiences across cultures through both visual impact and emotional resonance. Guided by a commitment to
+            authenticity and a refined artistic vision, Huda continues to expand her creative practice while remaining rooted
+            in the shared human condition.
           </p>
         </div>
       </div>
-    </div>
-  </section>
-)}
 
+      {/* بلوك 1: نص يسار + صورة يمين */}
+      <div className="max-w-6xl mx-auto px-6 pb-24">
+        <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
+          <div className="order-1">
+            <h3 className="text-xl font-semibold mb-3">On Craft & Process</h3>
+            <p className="text-neutral-700 leading-7">
+              A practice shaped by curiosity, discipline, and play—where images evolve through layers of intuition and precision.
+            </p>
+          </div>
+          <div className="order-2">
+            <img src={imgProcess} alt="Process" className="w-full aspect-[4/3] object-cover" loading="lazy" />
+          </div>
+        </div>
 
+        {/* بلوك 2: صورة يسار + نص يمين */}
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="md:order-1">
+            <img src={imgConcept} alt="Concept" className="w-full aspect-[4/3] object-cover" loading="lazy" />
+          </div>
+          <div className="md:order-2">
+            <h3 className="text-xl font-semibold mb-3">Concept & Emotion</h3>
+            <p className="text-neutral-700 leading-7">
+              Joyful visuals meet subtle undercurrents—inviting a slower reading beyond the first impression.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ===== Lightbox بسيط ===== */
 function Lightbox({ images, index, onClose, onPrev, onNext }) {
   if (index < 0) return null;
   return (
     <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center">
-      <button
-        onClick={onClose}
-        className="absolute top-6 right-6 text-white text-3xl"
-        aria-label="close"
-      >
-        ×
-      </button>
-      <button
-        onClick={onPrev}
-        className="absolute left-4 text-white text-2xl"
-        aria-label="prev"
-      >
-        ‹
-      </button>
-      <img
-        src={images[index]}
-        className="max-h-[82vh] max-w-[90vw] object-contain"
-      />
-      <button
-        onClick={onNext}
-        className="absolute right-4 text-white text-2xl"
-        aria-label="next"
-      >
-        ›
-      </button>
+      <button onClick={onClose} className="absolute top-6 right-6 text-white text-3xl" aria-label="close">×</button>
+      <button onClick={onPrev} className="absolute left-4 text-white text-2xl" aria-label="prev">‹</button>
+      <img src={images[index]} className="max-h-[82vh] max-w-[90vw] object-contain" />
+      <button onClick={onNext} className="absolute right-4 text-white text-2xl" aria-label="next">›</button>
     </div>
   );
 }
 
+/* ===== WORK ===== */
 function Work() {
   const [lb, setLb] = useState({ open: false, i: -1 });
-  const imgs = useMemo(
-    () =>
-      paths.workImages.map((p, i) => {
-        const u = new Image();
-        u.src = p;
-        return u.src;
-      }),
-    []
-  );
-
-  // بدائل لو بعض الصور ناقصة
-  const finalImgs = imgs.map((src, i) => src || fallback.workImages[i] || fallback.workImages[0]);
   const workVideo = `${paths.workVideo}`;
+  const imgs = paths.workImages.map((p, i) => p || fallback.workImages[i] || fallback.workImages[0]);
 
   return (
     <section className="pt-24 pb-16 px-6 max-w-6xl mx-auto">
@@ -331,88 +247,60 @@ function Work() {
 
       {/* فيديو أعلى القسم */}
       <div className="relative w-full aspect-video bg-black mb-4">
-        <video
-          src={workVideo}
-          controls
-          playsInline
-          className="w-full h-full object-cover"
-        />
+        <video src={workVideo} controls playsInline className="w-full h-full object-cover" />
       </div>
       <p className="text-neutral-600 mb-10">
-        A selection from recent bodies of work—spanning painting, digital
-        compositing, and photographic experiments.
+        A selection from recent bodies of work—spanning painting, digital compositing, and photographic experiments.
       </p>
 
-      {/* سلايدر صور بسيط */}
-      <div className="relative overflow-hidden">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {finalImgs.map((src, i) => (
-            <button
-              key={i}
-              onClick={() => setLb({ open: true, i })}
-              className="group text-left"
-              title="Open"
-            >
-              <div className="w-full h-64 bg-neutral-100 overflow-hidden">
-                <img
-                  src={src}
-                  className="w-full h-full object-cover group-hover:scale-105 transition"
-                />
-              </div>
-              <div className="mt-3">
-                <div className="font-medium">Material Encounters</div>
-                <div className="text-sm text-neutral-500">
-                  Intersections of textile, paint, and light.
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
+      {/* جريد صور + فتح لايتبوكس */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {imgs.map((src, i) => (
+          <button
+            key={i}
+            onClick={() => setLb({ open: true, i })}
+            className="group text-left"
+            title="Open"
+          >
+            <div className="w-full h-64 bg-neutral-100 overflow-hidden">
+              <img
+                src={src}
+                onError={(e) => (e.currentTarget.src = fallback.workImages[i] || fallback.workImages[0])}
+                className="w-full h-full object-cover group-hover:scale-105 transition"
+              />
+            </div>
+            <div className="mt-3">
+              <div className="font-medium">Material Encounters</div>
+              <div className="text-sm text-neutral-500">Intersections of textile, paint, and light.</div>
+            </div>
+          </button>
+        ))}
       </div>
 
-      {/* Lightbox */}
       <Lightbox
-        images={finalImgs}
+        images={imgs}
         index={lb.open ? lb.i : -1}
         onClose={() => setLb({ open: false, i: -1 })}
-        onPrev={() =>
-          setLb((s) => ({ ...s, i: (s.i - 1 + finalImgs.length) % finalImgs.length }))
-        }
-        onNext={() => setLb((s) => ({ ...s, i: (s.i + 1) % finalImgs.length }))}
+        onPrev={() => setLb((s) => ({ ...s, i: (s.i - 1 + imgs.length) % imgs.length }))}
+        onNext={() => setLb((s) => ({ ...s, i: (s.i + 1) % imgs.length }))}
       />
     </section>
   );
 }
 
+/* ===== PROJECTS ===== */
 function Projects() {
   const videoUrl = `${paths.projectsVideo}`;
   const cards = [
-    {
-      title: "Metamorphosis",
-      meta: "MoMA, New York — 2024",
-      desc: "A short description about concept, venue, and year.",
-    },
-    {
-      title: "Digital Horizons",
-      meta: "Tate Modern, London — 2023",
-      desc: "A short description about concept, venue, and year.",
-    },
-    {
-      title: "Echoes of Tomorrow",
-      meta: "Centre Pompidou, Paris — 2023",
-      desc: "A short description about concept, venue, and year.",
-    },
+    { title: "Metamorphosis",     meta: "MoMA, New York — 2024",           desc: "A short description about concept, venue, and year." },
+    { title: "Digital Horizons",   meta: "Tate Modern, London — 2023",      desc: "A short description about concept, venue, and year." },
+    { title: "Echoes of Tomorrow", meta: "Centre Pompidou, Paris — 2023",   desc: "A short description about concept, venue, and year." },
   ];
   return (
     <section className="pt-24 pb-16 px-6 max-w-6xl mx-auto">
       <h2 className="text-3xl font-semibold mb-6">Exhibitions & Projects</h2>
       <div className="relative w-full aspect-video bg-black mb-8">
-        <video
-          src={videoUrl}
-          controls
-          playsInline
-          className="w-full h-full object-cover"
-        />
+        <video src={videoUrl} controls playsInline className="w-full h-full object-cover" />
       </div>
       <div className="grid md:grid-cols-3 gap-6">
         {cards.map((c) => (
@@ -427,16 +315,14 @@ function Projects() {
   );
 }
 
+/* ===== PRESS ===== */
 function Press() {
   const imgs = paths.pressImages.map((p, i) => p || fallback.pressImages[i] || fallback.pressImages[0]);
   const [i, setI] = useState(0);
   const timer = useRef(null);
 
   useEffect(() => {
-    timer.current = setInterval(
-      () => setI((v) => (v + 1) % imgs.length),
-      3500
-    );
+    timer.current = setInterval(() => setI((v) => (v + 1) % imgs.length), 3500);
     return () => clearInterval(timer.current);
   }, [imgs.length]);
 
@@ -444,87 +330,57 @@ function Press() {
     <section className="pt-24 pb-16 px-6 max-w-7xl mx-auto">
       <h2 className="text-3xl font-semibold mb-6">Press / Media</h2>
       <div className="relative w-full overflow-hidden">
-        {/* سلايدر صورة كبيرة أوتوماتيكي */}
         <div className="w-full h-[52vw] max-h-[620px] bg-neutral-100">
           <img
             src={imgs[i]}
+            onError={(e) => (e.currentTarget.src = fallback.pressImages[(i % fallback.pressImages.length)])}
             className="w-full h-full object-cover"
             alt="press"
           />
         </div>
         <div className="absolute bottom-4 right-4 flex gap-2">
-          <button
-            className="px-3 py-1 bg-black/70 text-white"
-            onClick={() => setI((v) => (v - 1 + imgs.length) % imgs.length)}
-          >
-            ‹
-          </button>
-          <button
-            className="px-3 py-1 bg-black/70 text-white"
-            onClick={() => setI((v) => (v + 1) % imgs.length)}
-          >
-            ›
-          </button>
+          <button className="px-3 py-1 bg-black/70 text-white" onClick={() => setI((v) => (v - 1 + imgs.length) % imgs.length)}>‹</button>
+          <button className="px-3 py-1 bg-black/70 text-white" onClick={() => setI((v) => (v + 1) % imgs.length)}>›</button>
         </div>
       </div>
     </section>
   );
 }
 
+/* ===== CONTACT ===== */
 function Contact() {
   return (
     <section className="pt-24 pb-16 px-6 max-w-5xl mx-auto">
       <h2 className="text-3xl font-semibold mb-6">Contact</h2>
       <p className="mb-2">
-        Email:{" "}
-        <a href="mailto:hello@artist.com" className="underline">
-          hello@artist.com
-        </a>
+        Email: <a href="mailto:hello@artist.com" className="underline">hello@artist.com</a>
       </p>
       <p>Instagram · Behance · LinkedIn</p>
     </section>
   );
 }
 
+/* ===== APP ===== */
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [section, setSection] = useState("home");
 
-  // عند تغيير القسم، نطلع أعلى الصفحة
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [section]);
+  // عند تغيير القسم نرجع لأعلى الصفحة
+  useEffect(() => { window.scrollTo(0, 0); }, [section]);
 
   return (
     <div className="bg-white text-neutral-900">
       <Header onOpenMenu={() => setMenuOpen(true)} />
       <SocialBar />
-      <OverlayMenu
-        open={menuOpen}
-        onClose={() => setMenuOpen(false)}
-        onGo={(id) => setSection(id)}
-      />
+      <OverlayMenu open={menuOpen} onClose={() => setMenuOpen(false)} onGo={(id) => setSection(id)} />
 
-      {/* أقسام منفصلة – يظهر واحد فقط */}
+      {/* يظهر قسم واحد فقط */}
       {section === "home" && <Hero onContact={() => setSection("contact")} />}
       {section === "about" && <About />}
       {section === "work" && <Work />}
       {section === "projects" && <Projects />}
       {section === "press" && <Press />}
       {section === "contact" && <Contact />}
-
-      {/* ستايلات خفيفة للأنيميشن */}
-      <style>{`
-        [data-reveal] {
-          opacity: 0;
-          transform: translateY(12px);
-          transition: all .8s ease;
-        }
-        .reveal-in {
-          opacity: 1 !important;
-          transform: translateX(0) translateY(0) !important;
-        }
-      `}</style>
     </div>
   );
 }
