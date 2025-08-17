@@ -181,93 +181,100 @@ function Hero({ onContact }) {
   );
 }
 
-function About() {
-  useReveal();
-  const img1 = useImg(paths.about1, fallback.about1);
-  const img2 = useImg(paths.about2, fallback.about2);
+{/* ===== ABOUT / BIO ===== */}
+{activeSection === "about" && (
+  <section id="about" className="bg-white text-neutral-900">
 
-  return (
-    <section className="pt-24 pb-16 px-6 max-w-5xl mx-auto">
-      <h2 className="text-3xl font-semibold mb-8">About / Bio</h2>
+    {/* صورة كبيرة في أعلى القسم */}
+    <div className="relative w-full h-[60vh] sm:h-[70vh] overflow-hidden">
+      <img
+        src={`${import.meta.env.BASE_URL}img/about-1.jpg`}
+        alt="Huda in studio"
+        className="absolute inset-0 w-full h-full object-cover"
+        loading="eager"
+      />
+    </div>
 
-      <div className="space-y-6 text-neutral-800">
-        <h3 className="text-xl font-semibold">Huda Beydoun</h3>
-        <p className="text-sm text-neutral-500">
-          Visual Artist | Photographer | Creative Director
+    {/* نص البايو */}
+    <div className="max-w-5xl mx-auto px-6 py-16">
+      <h2 className="text-3xl font-semibold mb-6">About / Bio</h2>
+
+      <h3 className="text-lg font-semibold mb-2">Huda Beydoun</h3>
+      <p className="text-sm text-neutral-600 mb-6">
+        Visual Artist | Photographer | Creative Director
+      </p>
+
+      <div className="space-y-5 leading-7 text-[17px]">
+        <p>
+          Born in 1988 in Saudi Arabia, Huda Beydoun is a multidisciplinary visual artist,
+          photographer, and creative director whose work has been exhibited locally and
+          internationally since 2009. Her practice spans painting, mixed media, digital art,
+          and photography, weaving together vibrant colors and layered narratives that explore
+          the depth of human experience.
         </p>
         <p>
-          Born in 1988 in Saudi Arabia, Huda Beydoun is a multidisciplinary
-          visual artist, photographer, and creative director whose work has been
-          exhibited locally and internationally since 2009. Her practice spans
-          painting, mixed media, digital art, and photography, weaving together
-          vibrant colors and layered narratives that explore the depth of human
-          experience.
+          Her distinctive visual language often pairs joyful, striking compositions with subtle
+          emotional undercurrents, inviting viewers to look beyond the surface.
         </p>
         <p>
-          Her distinctive visual language often pairs joyful, striking
-          compositions with subtle emotional undercurrents, inviting viewers to
-          look beyond the surface.
+          In 2018, she moved to Paris to study fashion photography under the creative direction
+          of Paolo Roversi and Dominique Issermann, an experience that refined her ability to
+          merge conceptual vision with technical precision. Her work as a creative director has
+          further shaped her capacity to curate cohesive visual worlds, from individual artworks
+          to large-scale projects.
         </p>
         <p>
-          In 2018, she moved to Paris to study fashion photography under the
-          creative direction of Paolo Roversi and Dominique Issermann, an
-          experience that refined her ability to merge conceptual vision with
-          technical precision. Her work as a creative director has further
-          shaped her capacity to curate cohesive visual worlds, from individual
-          artworks to large-scale projects.
-        </p>
-        <p>
-          Her work has been presented in galleries, cultural institutions, and
-          art fairs, and is recognized for its ability to connect audiences
-          across cultures through both visual impact and emotional resonance.
-          Guided by a commitment to authenticity and a refined artistic vision,
-          Huda continues to expand her creative practice while remaining rooted
-          in the shared human condition.
+          Her work has been presented in galleries, cultural institutions, and art fairs, and is
+          recognized for its ability to connect audiences across cultures through both visual impact
+          and emotional resonance. Guided by a commitment to authenticity and a refined artistic
+          vision, Huda continues to expand her creative practice while remaining rooted in the shared
+          human condition.
         </p>
       </div>
+    </div>
 
-      {/* بلوك 1 */}
-      <div className="mt-16 grid md:grid-cols-2 gap-10 items-center">
-        <img
-          src={img1}
-          alt="Studio"
-          className="w-full h-[420px] object-cover opacity-0 translate-x-10"
-          data-reveal
-        />
-        <div
-          className="opacity-0 -translate-x-10"
-          data-reveal
-        >
-          <h3 className="text-xl font-semibold mb-2">On Craft & Process</h3>
-          <p className="text-neutral-700">
-            A practice shaped by curiosity, discipline, and play—where images
-            evolve through layers of intuition and precision.
+    {/* بلوك 1: صورة يمين + نص يسار */}
+    <div className="max-w-6xl mx-auto px-6 pb-24">
+      <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
+        <div className="order-1">
+          <h3 className="text-xl font-semibold mb-3">On Craft & Process</h3>
+          <p className="text-neutral-700 leading-7">
+            A practice shaped by curiosity, discipline, and play—where images evolve
+            through layers of intuition and precision.
           </p>
+        </div>
+        <div className="order-2">
+          <img
+            src={`${import.meta.env.BASE_URL}img/about-2.jpg`}
+            alt="Process"
+            className="w-full aspect-[4/3] object-cover"
+            loading="lazy"
+          />
         </div>
       </div>
 
-      {/* بلوك 2 (معكوس) */}
-      <div className="mt-16 grid md:grid-cols-2 gap-10 items-center">
-        <div
-          className="order-2 md:order-1 opacity-0 translate-x-10"
-          data-reveal
-        >
-          <h3 className="text-xl font-semibold mb-2">Concept & Emotion</h3>
-          <p className="text-neutral-700">
+      {/* بلوك 2: صورة يسار + نص يمين */}
+      <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="md:order-1">
+          <img
+            src={`${import.meta.env.BASE_URL}img/about-1.jpg`}
+            alt="Concept"
+            className="w-full aspect-[4/3] object-cover"
+            loading="lazy"
+          />
+        </div>
+        <div className="md:order-2">
+          <h3 className="text-xl font-semibold mb-3">Concept & Emotion</h3>
+          <p className="text-neutral-700 leading-7">
             Joyful visuals meet subtle undercurrents—inviting a slower reading
             beyond the first impression.
           </p>
         </div>
-        <img
-          src={img2}
-          alt="Process"
-          className="order-1 md:order-2 w-full h-[420px] object-cover opacity-0 -translate-x-10"
-          data-reveal
-        />
       </div>
-    </section>
-  );
-}
+    </div>
+  </section>
+)}
+
 
 function Lightbox({ images, index, onClose, onPrev, onNext }) {
   if (index < 0) return null;
