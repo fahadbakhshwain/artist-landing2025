@@ -98,23 +98,30 @@ export default function App() {
       </header>
 
       {/* Hero */}
-      <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.3)), url('https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=1920')` }}
-        />
-        <div className="relative z-10 text-center text-white" data-animate>
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-4 opacity-0 translate-y-8 transition-all duration-1000 ease-out">
-            SWIMMING IN NONSENSE
-          </h1>
-          <p className="text-2xl md:text-3xl font-light tracking-widest uppercase mb-8 opacity-0 translate-y-4 transition-all duration-1000 delay-300 ease-out">
-            SINCE 1988
-          </p>
-          <Button onClick={() => scrollToSection("contact")} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg font-medium rounded-none transition-all duration-300 opacity-0 translate-y-4 delay-500">
-            Contact
-          </Button>
-        </div>
-      </section>
+<section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+  <div
+    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+    style={{ backgroundImage: `linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)), url('/img/hero.jpg')` }}
+  />
+  <div className="relative z-10 text-center text-white" data-animate>
+    <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-4 opacity-0 translate-y-8 transition-all duration-1000 ease-out">
+      {/* اكتب الشعار هنا */}
+      فهد باخشوين
+    </h1>
+
+    <p className="text-2xl md:text-3xl font-light tracking-tight mb-8 opacity-0 translate-y-4 transition-all duration-1000 delay-300 ease-out">
+      {/* السطر الثاني (اختياري) */}
+      فنان بصري — Portfolio
+    </p>
+
+    <Button
+      onClick={() => scrollToSection("contact")}
+      className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg font-medium rounded-none transition-all duration-300 opacity-0 translate-y-4 delay-500"
+    >
+      تواصل
+    </Button>
+  </div>
+</section>
 
       {/* About */}
       <section id="about" className="py-24 px-6 max-w-7xl mx-auto">
