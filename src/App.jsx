@@ -92,8 +92,76 @@ export default function App() {
         </div>
       )}
 
-      {/* placeholder لـ contact عشان زر Contact يشتغل */}
-      <section id="contact" className="h-1" />
+     {/* ===== Sections ===== */}
+
+<section id="about" className="py-24 px-6 bg-white text-neutral-900">
+  <div className="max-w-5xl mx-auto">
+    <h2 className="text-3xl font-semibold mb-6">About / Bio</h2>
+    <p className="text-lg leading-relaxed">
+      اكتب نبذة قصيرة عنك هنا. سطرين–ثلاثة تكفي كبداية.
+    </p>
+  </div>
+</section>
+
+<section id="work" className="py-24 px-6 bg-neutral-50">
+  <div className="max-w-6xl mx-auto">
+    <h2 className="text-3xl font-semibold mb-10">Work Portfolio</h2>
+    {/* شبكة صور مؤقتة (نبدّلها لاحقًا بصورك) */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <img src="https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=800" className="w-full h-64 object-cover" alt="" />
+      <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800" className="w-full h-64 object-cover" alt="" />
+      <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800" className="w-full h-64 object-cover" alt="" />
+      <img src="https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=800" className="w-full h-64 object-cover" alt="" />
+      <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800" className="w-full h-64 object-cover" alt="" />
+      <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800" className="w-full h-64 object-cover" alt="" />
     </div>
-  );
-}
+    {/* لاحقًا نغيّر الروابط إلى: src={`${import.meta.env.BASE_URL}img/p1.jpg`} وهكذا */}
+  </div>
+</section>
+
+<section id="projects" className="py-24 px-6 bg-white">
+  <div className="max-w-5xl mx-auto">
+    <h2 className="text-3xl font-semibold mb-6">Projects / Exhibitions</h2>
+    <ul className="space-y-4">
+      <li className="border border-neutral-200 p-4">
+        Metamorphosis — MoMA, New York — 2024
+      </li>
+      <li className="border border-neutral-200 p-4">
+        Digital Horizons — Tate Modern, London — 2023
+      </li>
+      <li className="border border-neutral-200 p-4">
+        Echoes of Tomorrow — Paris — 2023
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section id="press" className="py-24 px-6 bg-neutral-50">
+  <div className="max-w-5xl mx-auto">
+    <h2 className="text-3xl font-semibold mb-6">Press / Media</h2>
+    <div className="grid md:grid-cols-3 gap-6">
+      <a href="#" className="block border border-neutral-200 p-4 hover:bg-neutral-100">
+        Artforum — Rising Stars (2024)
+      </a>
+      <a href="#" className="block border border-neutral-200 p-4 hover:bg-neutral-100">
+        Art in America — Future of Digital Art (2024)
+      </a>
+      <a href="#" className="block border border-neutral-200 p-4 hover:bg-neutral-100">
+        Frieze — New Voices (2023)
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="contact" className="py-24 px-6 bg-black text-white">
+  <div className="max-w-5xl mx-auto">
+    <h2 className="text-3xl font-semibold mb-6">Contact</h2>
+    <p className="mb-2">
+      Email: <a href="mailto:hello@artist.com" className="underline">hello@artist.com</a>
+    </p>
+    <p>Instagram · Behance · LinkedIn</p>
+  </div>
+</section>
+
+{/* ===== End Sections ===== */}
+
