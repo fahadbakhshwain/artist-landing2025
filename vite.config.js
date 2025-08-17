@@ -1,6 +1,7 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
 export default defineConfig({
   plugins: [react()],
-  base: "/artist-landing2025/"   // مهم يطابق اسم الريبو
-});
+  base: '/artist-landing2025/',   // <— مهم
+})
