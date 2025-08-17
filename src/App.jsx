@@ -1,7 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 /* ====== مسارات ثابتة تناسب GitHub Pages ====== */
-const base = import.meta.env.BASE_URL || "/";
+const base = (() => {
+  // لو Vite ضبط الـ BASE_URL نستخدمه
+  if (import.meta.env.BASE_URL && import.meta.env.BASE_URL !== "/") {
+    return import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + "/";
+  }
+  // اكتشاف اسم الريبو من المسار /artist-landing2025/
+  const m = window.location.pathname.match(/^\/[^/]+\/?/);
+  return m ? (m[0].endsWith("/") ? m[0] : m[0] + "/") : "/";
+})();
+
 
 const paths = {
   hero: `${base}img/hero.jpg`,
